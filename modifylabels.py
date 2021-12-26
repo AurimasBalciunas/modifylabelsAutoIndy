@@ -1,42 +1,42 @@
+#Aurimas Balciunas
+#Quick Tool for MIT-Pitt AutoIndy to convert rotation_y in all bins
+#Note: Place this file in a folder containing all of your bins and run it
+#CAREFUL: It will scan and modify ALL SUBDIRECTORIES
+
 import os
-from os import listdir
-from os.path import isfile, join
+#from os import listdir
+#from os.path import isfile, join
 from fnmatch import fnmatch
 import numpy as np
+
 print("Modify Labels Script Running");
 
-
-root  = "."
+#User Settings
+debugMode = True;
+root  = "." #can modify this to run on a specific directory
 pattern = ".txt" #change to .bin in real scenario
-myfiles = [os.path.join(path, name) for path, subdirs, files in os.walk(root) for name in files if name.endswith(pattern) ]
-for filename in myfiles:
-	print(filename);
-	filestream = open(filename, "r+")
-	for line in filestream:
-		print("New Line");
-		print("Old: " + line);
-#		print('\n');
-		line_split = line.split();
-		rotation_y = float(line_split[-1]);
-		#number = splitline[-1]
-		#print(rotation_y);
-		#print('\n');
-		rotation_y_new = -rotation_y + np.pi / 2;
-		#rounding it
-		rotation_y_new = round(rotation_y_new, 9)
-		#print('\n');
 
-		#Replacing the line
-		#line_split[-1] = str(rotation_y_new);
-		
-		#Joining it back in
-		#newLine = ' '.join(line_split)
-		#print("New: " + newLine);
+allFiles = [os.path.join(path, name) for path, subdirs, files in os.walk(root) for name in files if name.endswith(pattern) ]
+for fileName in allFiles:
+	fileStream = open(fileName, "r+")
+	for line in fileStream:
 
+		if(debugMode):
+			print("\n\nFile Name: " + fileName + "\n")
+			print("Old: " + line);
+
+		#isolating number
+		lineSplit = line.split();
+		rotationY = float(lineSplit[-1]);
+		#Calculating and rounding
+		rotationYNew = -rotationY + np.pi / 2;
+		rotationYNew = round(rotationYNew, 9)
 		#Uploading it back
-		line = line.replace(str(rotation_y), str(round(rotation_y_new,9)));
-		print("New: " + line);
-	filestream.truncate(0);
-	filestream.seek(0);
-	filestream.write(line);
-	filestream.close();
+		line = line.replace(str(rotationY), str(round(rotationYNew,9)));
+		if(debugMode):
+			print("New: " + line);
+
+	fileStream.truncate(0);
+	fileStream.seek(0);
+	fileStream.write(line);
+	fileStream.close();
